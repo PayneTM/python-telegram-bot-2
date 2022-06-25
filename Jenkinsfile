@@ -9,7 +9,7 @@ pipeline {
                 }
             }
             steps {
-                sh 'python -m py_compile python-telegram-bot-2/main.py' 
+                sh 'python -m py_compile main.py' 
                 stash(name: 'compiled-results', includes: 'sources/*.py*') 
             }
         }
