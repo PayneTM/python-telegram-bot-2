@@ -13,15 +13,15 @@ pipeline {
                 }
             }
             steps {
-                sh 'python -m py_compile main.py' 
+                sh 'python3 -m py_compile main.py' 
                 stash(name: 'compiled-results', includes: '*.py*') 
             }
         }
         stage('Deliver') {
             agent any
             environment {
-                VOLUME = '$(pwd)/sources:/blah'
-                IMAGE = 'cdrx/pyinstaller-linux:python2'
+                VOLUME = '$(pwd):/src'
+                IMAGE = 'cdrx/pyinstaller-linux:python3'
             }
             steps {
                 dir(path: env.BUILD_ID) {
