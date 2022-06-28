@@ -1,39 +1,48 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'python:slim' 
+        }
+    }
 
     options {
         skipStagesAfterUnstable()
     }
+    
+    environment {
+        PRODUCT = 'bot'
+        DOCKERHUB_CREDS = credentials('dockerhub-user')
+    }
 
     stages {
-         stage('Build') { 
-            agent {
-                docker {
-                    image 'python:3' 
-                }
-            }
+        stage('Build') {
             steps {
-                sh 'python3 -m py_compile main.py' 
-                stash(name: 'compiled-results', includes: '*.py*') 
+                sh "docker build . -t ${env.PRODUCT}:${env.BUILD_ID} -t ${env.PRODUCT}:latest"
             }
         }
-        stage('Deliver') {
-            agent any
-            environment {
-                VOLUME = '$(pwd):/src'
-                IMAGE = 'cdrx/pyinstaller-linux:python3'
-            }
+
+        stage('Deploy') {
             steps {
-                dir(path: env.BUILD_ID) {
-                    unstash(name: 'compiled-results')
-                    sh "docker run --rm -v ${VOLUME} ${IMAGE} 'pyinstaller -F main.py'"
-                }
+                sh "docker build . -t ${env.PRODUCT}:${env.BUILD_ID} -t ${env.PRODUCT}:latest"
             }
-            post {
-                success {
-                    archiveArtifacts "${env.BUILD_ID}/dist/main"
-                    sh "docker run --rm -v ${VOLUME} ${IMAGE} 'rm -rf build dist'"
-                }
+        }
+
+        stage('Dockerhub Login') {
+            steps {
+                sh "docker login -u ${env.DOCKERHUB_CREDS_USR} --password-stdin"
+            }
+        }
+
+        stage('Push') {
+            steps {
+                sh "docker push -a ${env.PRODUCT}"
+            }
+        }
+
+        post{
+            always
+            {
+                sh "docker logout"
             }
         }
     }

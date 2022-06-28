@@ -1,5 +1,4 @@
 import logging
-from msilib.schema import AppId
 from TeamSubscription import TeamSubscription
 from TeamSubscriptionRepository import TeamSubscriptionRepository
 from TeamSubscriptionRepositoryCache import TeamSubscriptionRepositoryCache
