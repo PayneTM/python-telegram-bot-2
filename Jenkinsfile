@@ -1,9 +1,5 @@
 pipeline {
-    agent {
-        docker {
-            image 'python:slim' 
-        }
-    }
+    agent any
 
     options {
         skipStagesAfterUnstable()
@@ -16,12 +12,6 @@ pipeline {
 
     stages {
         stage('Build') {
-            steps {
-                sh "docker build . -t ${env.PRODUCT}:${env.BUILD_ID} -t ${env.PRODUCT}:latest"
-            }
-        }
-
-        stage('Deploy') {
             steps {
                 sh "docker build . -t ${env.PRODUCT}:${env.BUILD_ID} -t ${env.PRODUCT}:latest"
             }
