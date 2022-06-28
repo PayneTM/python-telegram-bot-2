@@ -6,7 +6,7 @@ pipeline {
     }
     
     environment {
-        PRODUCT = 'bot'
+        PRODUCT = 'paynetm/devops-test'
     }
 
     stages {
