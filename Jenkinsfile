@@ -7,7 +7,6 @@ pipeline {
     
     environment {
         PRODUCT = 'bot'
-        DOCKERHUB_CREDS = credentials('dockerhub-user')
     }
 
     stages {
@@ -18,8 +17,11 @@ pipeline {
         }
 
         stage('Dockerhub Login') {
+             environment {
+                DOCKERHUB_CREDS = credentials('dockerhub-user')
+            }
             steps {
-                sh "docker login -u ${env.DOCKERHUB_CREDS_USR} --password-stdin"
+                sh "docker login -u ${env.DOCKERHUB_CREDS_USR} -p ${env.DOCKERHUB_CREDS_PSW}"
             }
         }
 
