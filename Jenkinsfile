@@ -11,7 +11,11 @@ pipeline {
 
     stages {
         stage('Build') {
+            environment {
+                CONFIG_FILE_ID = credentials('main_config')
+            }
             steps {
+                sh "cp --remove-destination ${CONFIG_FILE_ID} ."
                 sh "docker build . -t ${env.PRODUCT}:${env.BUILD_ID} -t ${env.PRODUCT}:latest"
             }
         }
