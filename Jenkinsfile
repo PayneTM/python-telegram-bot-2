@@ -38,12 +38,11 @@ pipeline {
                 sh "docker push -a ${env.PRODUCT}"
             }
         }
-
-        post{
-            always
-            {
-                sh "docker logout"
-            }
+    }
+    post{
+        always
+        {
+            sh "docker logout"
         }
     }
 }
